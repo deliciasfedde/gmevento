@@ -4,6 +4,36 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#0b0820">
+  <!-- ⚡ (22-oct-2026) CARGA INMEDIATA: se pide el evento a Google apenas se abre el link,
+       en paralelo con todo lo demás. Y en celulares sencillos se apagan los efectos pesados. -->
+  <link rel="preconnect" href="https://script.google.com">
+  <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+  <link rel="dns-prefetch" href="https://script.googleusercontent.com">
+  <script id="gmevPreJS">
+  (function () {
+    try {
+      var n = navigator;
+      if ((n.deviceMemory && n.deviceMemory <= 3) || (n.hardwareConcurrency && n.hardwareConcurrency <= 4)) document.documentElement.classList.add("gm-liviano");
+    } catch (e0) {}
+    try {
+      var API = "https://script.google.com/macros/s/AKfycbwoMVOMXOXfuzF66EhKNEAl-04jJY3AQf8X_E9g56LWjjP5aYyPcEs_gaU-TODgnhfSKw/exec";
+      var q = new URLSearchParams(location.search);
+      var cod = String(q.get("e") || q.get("evento") || q.get("codigo") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+      var tok = ""; try { tok = localStorage.getItem("GMEV_TOKEN") || ""; } catch (e1) {}
+      if (!/^[a-z0-9]{24}$/.test(tok)) {
+        var abc = "abcdefghijklmnopqrstuvwxyz0123456789", rnd = (window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(24)) : null;
+        tok = ""; for (var i = 0; i < 24; i++) tok += abc.charAt(rnd ? rnd[i] % abc.length : Math.floor(Math.random() * abc.length));
+        try { localStorage.setItem("GMEV_TOKEN", tok); } catch (e2) {}
+      }
+      var nuevo = true; try { nuevo = localStorage.getItem("GMEV_SUBI_" + cod) !== "1"; } catch (e3) {}
+      var cuerpo = cod ? { accion: "evInicio", codigo: cod, token: tok, nuevo: nuevo } : { accion: "evLed" };
+      var p = fetch(API, { method: "POST", body: JSON.stringify(cuerpo), redirect: "follow" })
+        .then(function (r) { return r.json(); }).catch(function () { return null; });
+      window._gmevPre = { codigo: cod, p: p };   // lo usa la página del evento
+      window._gmevPreP = p;                      // lo usa la pantalla LED
+    } catch (e) {}
+  })();
+  </script>
   <title>Álbum GIF · Sube tus fotos del evento</title>
   <meta name="description" content="Sube tus fotos del evento al Álbum GIF de Gif And Memory. No necesitas descargar nada.">
   <meta property="og:title" content="📸 Sube tus fotos del evento · Álbum GIF">
@@ -12,7 +42,8 @@
   <link rel="icon" href="https://i.imgur.com/MHb7x08.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Roboto:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Roboto:wght@400;700;900&family=VT323&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Roboto:wght@400;700;900&family=VT323&display=swap" rel="stylesheet"></noscript>
   <style>
     /* ═══ Mismo estilo neón del Álbum GIF de Gif And Memory ═══ */
     :root{
@@ -151,7 +182,7 @@
       display: flex; justify-content: center; align-items: center; touch-action: pan-y; overscroll-behavior: none;
       background: radial-gradient(ellipse at 50% 32%, #2a0f52 0%, #150a34 34%, #08051a 66%, #030308 100%);
     }
-    #splash-screen.hide{ animation: fadeOutSplash .9s ease forwards; pointer-events: none; }
+    #splash-screen.hide{ animation: fadeOutSplash .5s ease forwards; pointer-events: none; }
     #splash-bg-fx{
       position: absolute; inset: 0; pointer-events: none; z-index: 0;
       background:
@@ -354,6 +385,16 @@
       #gmTourTit{ font-size: 20px; } #gmTourTxt{ font-size: 16px; } .gm-tour-b{ font-size: 14px; padding: 10px; } #gmTourCard{ padding: 12px 16px; }
     }
     @media (prefers-reduced-motion: reduce){ #gmTourManoIn, #gmTourOnda, #gmTourFoco{ animation: none !important; } }
+
+    /* ⚡ RENDIMIENTO: el fondo fijo obliga a redibujar toda la pantalla al deslizar en el celular */
+    @media (max-width: 720px), (hover: none) and (pointer: coarse){ body{ background-attachment: scroll; } }
+    /* ⚡ Celulares de gama baja (poca memoria o pocos núcleos): mismos colores, sin efectos pesados */
+    html.gm-liviano .estrellas{ display: none; }
+    html.gm-liviano #splash-center::before{ filter: none; animation: none; opacity: .18; }
+    html.gm-liviano #splash-logo{ animation: fadeIn 1s ease-out; filter: drop-shadow(0 0 14px rgba(168,85,247,.5)); }
+    html.gm-liviano .card{ box-shadow: 0 0 16px rgba(168,85,247,.22); }
+    html.gm-liviano #gmTourFoco{ animation: none; }
+    html.gm-liviano #indicadores #ledContent{ animation: gmevScroll 12s linear infinite; }
   </style>
 </head>
 <body>
@@ -471,17 +512,49 @@
     $("inCod").onkeydown = function (e) { if (e.key === "Enter") ir(); };
   }
 
+  /* ⚡ Lo último que se vio de cada evento queda guardado en el teléfono: se muestra al instante */
+  function evGuardado() { try { var o = JSON.parse(localStorage.getItem("GMEV_EV_" + CODIGO) || "null"); return (o && o.ok) ? o : null; } catch (e) { return null; } }
+  function evGuardar(r) {
+    try { localStorage.setItem("GMEV_EV_" + CODIGO, JSON.stringify(r)); }
+    catch (e) { try { var c = JSON.parse(JSON.stringify(r)); c.portada = ""; localStorage.setItem("GMEV_EV_" + CODIGO, JSON.stringify(c)); } catch (e2) {} }
+  }
+  function yaSubio() { try { return localStorage.getItem("GMEV_SUBI_" + CODIGO) === "1"; } catch (e) { return false; } }
+  function marcarSubio() { try { localStorage.setItem("GMEV_SUBI_" + CODIGO, "1"); } catch (e) {} }
+  function avisarPintado() { window._gmevPintado = true; try { window.dispatchEvent(new Event("gmev-pintado")); } catch (e) {} }
+  function pedirInfo() {
+    var normal = function () { return llamar({ accion: "evInfo", codigo: CODIGO, token: TOK, nuevo: !yaSubio() }); };
+    var pre = window._gmevPre; window._gmevPre = null;
+    if (pre && pre.codigo === CODIGO && pre.p) return pre.p.then(function (r) { return (r && r.info) ? r.info : normal(); }, normal);
+    return normal();
+  }
+
   /* ── Cargar el evento ── */
   function cargar() {
-    if (!CODIGO) { pintarCodigo(""); return; }
-    $("app").innerHTML = '<div class="card cargando"><i>📸</i>Buscando tu evento…</div>';
-    llamar({ accion: "evInfo", codigo: CODIGO, token: TOK }).then(function (r) {
-      if (!r || !r.ok) { pintarCodigo((r && r.message) || "No encontramos ese evento."); return; }
-      EV = r; pintarEvento();
+    if (!CODIGO) { pintarCodigo(""); avisarPintado(); return; }
+    var guardado = evGuardado();
+    if (guardado) { EV = guardado; pintarEvento(); avisarPintado(); }
+    else $("app").innerHTML = '<div class="card cargando"><i>📸</i>Buscando tu evento…</div>';
+    pedirInfo().then(function (r) {
+      if (!r || !r.ok) {
+        if (r && r.noExiste) { try { localStorage.removeItem("GMEV_EV_" + CODIGO); } catch (e) {} }
+        pintarCodigo((r && r.message) || "No encontramos ese evento."); avisarPintado(); return;
+      }
+      if (r.usadas > 0) marcarSubio();
+      evGuardar(r);
+      var cambio = !guardado || JSON.stringify(guardado) !== JSON.stringify(r);
+      EV = r;
+      if (cambio) {
+        var escribiendo = document.activeElement && document.activeElement.id === "inNom";
+        if (guardado && (SUBIENDO || escribiendo)) { pintarCuenta(); pintarEstados(); }
+        else pintarEvento();
+      }
+      avisarPintado();
     }).catch(function () {
+      if (guardado) return;   // sin internet: queda lo guardado en el teléfono
       $("app").innerHTML = '<div class="card"><div class="vacio">📶 No pudimos conectarnos.<br>Revisa tu internet e intenta de nuevo.</div>' +
         '<button class="btn" type="button" id="btnReint">REINTENTAR</button></div>';
       $("btnReint").onclick = cargar;
+      avisarPintado();
     });
   }
 
@@ -611,7 +684,7 @@
         return llamar({ accion: "evSubir", codigo: CODIGO, token: TOK, nombre: nombre, b64: p.b64, mime: "image/jpeg" });
       }).then(function (r) {
         if (r && r.ok) {
-          o.est = "ok"; o.aprob = r.estado === "APROBADA"; bien++;
+          o.est = "ok"; o.aprob = r.estado === "APROBADA"; bien++; marcarSubio();
           EV.usadas = r.usadas; EV.max = r.max; pintarCuenta(); pintarSesion();
           sig(i + 1);
         } else {
@@ -634,7 +707,7 @@
 
   function refrescar() {
     llamar({ accion: "evInfo", codigo: CODIGO, token: TOK }).then(function (r) {
-      if (r && r.ok) { EV = r; pintarCuenta(); pintarEstados(); }
+      if (r && r.ok) { EV = r; evGuardar(r); pintarCuenta(); pintarEstados(); }
     }).catch(function () {});
   }
 
@@ -685,22 +758,28 @@
     try { sessionStorage.setItem("GMEV_SPLASH_VISTO", "1"); } catch (e) {}
     var s = $("splash-screen"); if (!s) return;
     s.classList.add("hide");
-    setTimeout(function () { s.style.display = "none"; window.dispatchEvent(new Event("gmev-splash-fuera")); }, 950);
+    setTimeout(function () { s.style.display = "none"; window.dispatchEvent(new Event("gmev-splash-fuera")); }, 520);
   }
   window._gmevSplashFuera = function () { return splashListo; };
   (function () {
     var visto = false; try { visto = sessionStorage.getItem("GMEV_SPLASH_VISTO") === "1"; } catch (e) {}
     if (visto) { splashListo = true; var s = $("splash-screen"); if (s) s.style.display = "none"; return; }
     var c = leer(K_SPLASH); if (c && c.url) $("splash-logo").src = c.url;
-    setTimeout(ocultarSplash, 3500);   // máximo de espera (red mala)
+    // ⚡ El splash se va apenas la página está lista (mínimo 0,7 s para que se vea), máximo 2,5 s
+    var listoPagina = function () {
+      var desde = (window.performance && performance.now) ? performance.now() : 0;
+      setTimeout(ocultarSplash, Math.max(0, 700 - desde));
+    };
+    if (window._gmevPintado) listoPagina(); else window.addEventListener("gmev-pintado", listoPagina, { once: true });
+    setTimeout(ocultarSplash, 2500);
   })();
   function aplicarSplash(res) {
-    if (splashListo) return;
     var url = res && res.url ? String(res.url) : "";
-    if (!url) { setTimeout(ocultarSplash, 900); return; }
+    if (!url) return;
+    guardar(K_SPLASH, { url: url });   // la próxima vez sale al instante
+    if (splashListo) return;
     var pre = new Image();
-    pre.onload = function () { $("splash-logo").src = url; guardar(K_SPLASH, { url: url }); setTimeout(ocultarSplash, 900); };
-    pre.onerror = function () { setTimeout(ocultarSplash, 900); };
+    pre.onload = function () { if (!splashListo) $("splash-logo").src = url; };
     pre.src = url;
   }
 
@@ -836,15 +915,19 @@
     var lg = leer(K_LOGO); if (lg && lg.url) ponerLogo(lg.url, lg.link);
     var c = leer(K_LED); if (c && c.texto) pintarTexto(c.texto);
   })();
-  function cargar() {
-    llamar({ accion: "evLed" }).then(function (r) {
-      if (!r || !r.ok) { setTimeout(ocultarSplash, 600); return; }
-      if (r.trans && typeof r.trans.scrollMs === "number" && r.trans.scrollMs >= 1000) { _ledScrollMs = r.trans.scrollMs; guardar(K_TRANS, { scrollMs: _ledScrollMs }); }
-      aplicarLed(r.led);
-      aplicarSplash(r.splash);
-    }).catch(function () { setTimeout(ocultarSplash, 600); });
+  function aplicarRespuesta(r) {
+    if (!r || !r.ok) return;
+    if (r.trans && typeof r.trans.scrollMs === "number" && r.trans.scrollMs >= 1000) { _ledScrollMs = r.trans.scrollMs; guardar(K_TRANS, { scrollMs: _ledScrollMs }); }
+    aplicarLed(r.led);
+    aplicarSplash(r.splash);
   }
-  cargar();
+  function cargar() {
+    llamar({ accion: "evLed" }).then(aplicarRespuesta).catch(function () {});
+  }
+  // ⚡ Primera vez: usa el pedido que ya salió en el <head> (evento + LED + splash juntos)
+  var pre = window._gmevPreP; window._gmevPreP = null;
+  if (pre) pre.then(function (r) { if (r && (r.led || r.splash)) aplicarRespuesta(r); else cargar(); }, cargar);
+  else cargar();
   setInterval(function () { if (!document.hidden) cargar(); }, 120000);   // la LED se mantiene al día
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) return;
@@ -1072,4 +1155,5 @@
 </script>
 </body>
 </html>
+
 
