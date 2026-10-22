@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0820">
+  <title>Álbum GIF · Sube tus fotos del evento</title>
+  <meta name="description" content="Sube tus fotos del evento al Álbum GIF de Gif And Memory. No necesitas descargar nada.">
+  <meta property="og:title" content="📸 Sube tus fotos del evento · Álbum GIF">
+  <meta property="og:description" content="No necesitas descargar nada: elige tus fotos y listo.">
+  <meta property="og:image" content="https://i.imgur.com/MHb7x08.png">
+  <link rel="icon" href="https://i.imgur.com/MHb7x08.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ═══ Mismo estilo neón del Álbum GIF de Gif And Memory ═══ */
+    :root{
+      --fondo:#05030f; --card1:#111129; --card2:#08081c;
+      --oro:#ffe27a; --naranjo:#ff9d3c; --rosa:#ff2d95; --morado:#a855f7; --turq:#22e3d0; --lima:#bced1c; --menta:#9dffdc;
+      --txt:#fff; --txt2:#d9d8f2; --txt3:#a8a7cf; --mal:#ff6b8a;
+      --f: 17px;
+    }
+    @media (max-width: 720px){ :root{ --f: clamp(16px, 4.3vw, 24px); } }
+    *{ box-sizing: border-box; }
+    html, body{ margin: 0; min-height: 100%; }
+    body{
+      font-family: "Roboto", system-ui, sans-serif; font-size: var(--f); color: var(--txt); line-height: 1.4;
+      background:
+        radial-gradient(60% 40% at 0% 0%, rgba(255,45,149,.28), transparent 70%),
+        radial-gradient(60% 40% at 100% 20%, rgba(168,85,247,.32), transparent 70%),
+        radial-gradient(70% 40% at 50% 100%, rgba(34,227,208,.20), transparent 70%),
+        var(--fondo);
+      background-attachment: fixed;
+      padding: max(14px, env(safe-area-inset-top)) 12px max(28px, env(safe-area-inset-bottom));
+      -webkit-tap-highlight-color: transparent;
+    }
+    .estrellas{ position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .estrellas i{ position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff; opacity: .5; animation: titila 3s ease-in-out infinite; }
+    @keyframes titila{ 0%,100%{ opacity: .15; } 50%{ opacity: .8; } }
+    main{ position: relative; z-index: 1; max-width: 620px; margin: 0 auto; }
+
+    .cab{ display: flex; align-items: center; justify-content: center; gap: .55em; margin: .2em 0 .9em; }
+    .cab img{ width: 2.9em; height: 2.9em; border-radius: .8em; object-fit: contain; filter: drop-shadow(0 0 10px rgba(255,226,122,.45)); }
+    .cab b{ display: block; font-family: "Orbitron", sans-serif; font-weight: 900; font-size: 1.25em; letter-spacing: 1px; color: var(--oro); text-shadow: 0 0 14px rgba(255,226,122,.65); line-height: 1.05; }
+    .cab small{ display: block; font-family: "Orbitron", sans-serif; font-size: .62em; letter-spacing: 2px; color: var(--menta); }
+
+    .card{
+      position: relative; padding: 1.2em 1.05em 1.3em; border-radius: 1.5em;
+      background: linear-gradient(var(--card1), var(--card2)) padding-box,
+                  linear-gradient(115deg,#22e3d0 0%,#4b6bff 22%,#a855f7 48%,#ff2d95 74%,#bced1c 100%) border-box;
+      border: 2px solid transparent;
+      box-shadow: 0 0 40px rgba(168,85,247,.30), 0 18px 46px rgba(0,0,0,.65);
+    }
+    .card + .card{ margin-top: 1em; }
+
+    .portada{ position: relative; width: 100%; aspect-ratio: 16 / 10; border-radius: 1.1em; overflow: hidden; margin-bottom: .9em;
+      background: radial-gradient(120% 140% at 0% 0%, rgba(255,226,122,.25), transparent 60%), radial-gradient(120% 140% at 100% 100%, rgba(255,45,149,.3), transparent 60%), #140b2c;
+      border: 1.5px solid rgba(255,226,122,.45); box-shadow: 0 0 22px rgba(255,45,149,.25); display: flex; align-items: center; justify-content: center; font-size: 3.2em; }
+    .portada img{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    h1{ margin: 0; text-align: center; font-family: "Orbitron", sans-serif; font-size: 1.25em; letter-spacing: .5px; color: var(--oro); text-shadow: 0 0 14px rgba(255,226,122,.55); overflow-wrap: anywhere; line-height: 1.2; }
+    .sub{ margin-top: .35em; text-align: center; color: var(--txt2); font-size: .88em; }
+    .chips{ display: flex; flex-wrap: wrap; justify-content: center; gap: .4em; margin-top: .7em; }
+    .chip{ padding: .3em .7em; border-radius: 999px; font-size: .74em; font-weight: 900; color: #d9fff0; background: rgba(157,255,220,.1); border: 1.5px solid rgba(157,255,220,.3); }
+    .chip.oro{ color: var(--oro); background: rgba(255,226,122,.1); border-color: rgba(255,226,122,.45); }
+    .chip.rosa{ color: #ffd0e6; background: rgba(255,45,149,.14); border-color: rgba(255,45,149,.5); }
+
+    .pasos{ display: grid; grid-template-columns: repeat(3, 1fr); gap: .45em; margin-top: 1em; }
+    .paso{ text-align: center; padding: .6em .3em; border-radius: 1em; background: rgba(255,255,255,.05); border: 1.5px solid rgba(157,255,220,.2); font-size: .74em; color: var(--txt2); line-height: 1.25; }
+    .paso i{ display: block; font-style: normal; font-size: 1.7em; margin-bottom: .15em; }
+    .paso b{ color: #fff; }
+
+    .lbl{ display: block; margin: 1em 0 .35em; font-size: .78em; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--txt3); }
+    .in{ width: 100%; padding: .7em .8em; border-radius: .8em; border: 1.5px solid rgba(157,255,220,.28); background: rgba(0,0,0,.45); color: #fff; font-size: 1em; font-family: inherit; outline: none; }
+    .in:focus{ border-color: var(--menta); box-shadow: 0 0 10px rgba(157,255,220,.35); }
+    .in.cod{ text-transform: uppercase; letter-spacing: .25em; font-family: "Orbitron", sans-serif; text-align: center; font-weight: 700; }
+
+    .btn{ display: block; width: 100%; margin-top: .8em; padding: .9em 1em; border: none; border-radius: 1em; cursor: pointer;
+      font-family: "Orbitron", sans-serif; font-weight: 700; font-size: .95em; letter-spacing: .6px; text-transform: uppercase; color: #0b0b1e;
+      background: linear-gradient(90deg,var(--turq),var(--lima)); box-shadow: 0 0 16px rgba(188,237,28,.45); text-align: center; text-decoration: none; }
+    .btn.oro{ background: linear-gradient(90deg,var(--oro),var(--naranjo)); box-shadow: 0 0 18px rgba(255,226,122,.5); color: #1a0a00; }
+    .btn.sec{ background: rgba(255,255,255,.07); color: var(--menta); box-shadow: none; border: 1.5px solid rgba(157,255,220,.35); }
+    .btn.play{ background: linear-gradient(100deg,#ffe27a 0%,#ff9d3c 45%,#ff2d95 100%); color: #1a0814; box-shadow: 0 0 18px rgba(255,45,149,.45); }
+    .btn:disabled{ opacity: .5; cursor: default; }
+    .btn:active:not(:disabled){ transform: scale(.985); }
+    .fila{ display: flex; gap: .5em; } .fila .btn{ flex: 1 1 0; min-width: 0; padding-left: .4em; padding-right: .4em; font-size: .85em; }
+
+    .cuenta{ margin-top: .9em; text-align: center; font-weight: 900; color: var(--lima); font-size: .92em; }
+    .cuenta.no{ color: var(--txt3); }
+    .msg{ margin-top: .7em; min-height: 1.2em; text-align: center; font-weight: 700; font-size: .88em; line-height: 1.35; color: var(--txt2); }
+    .msg.bien{ color: var(--lima); } .msg.mal{ color: var(--mal); }
+    .vacio{ margin-top: .9em; text-align: center; color: var(--txt3); padding: 1em .5em; font-size: .92em; line-height: 1.4; border-radius: 1em; background: rgba(0,0,0,.3); }
+
+    .fotos{ display: grid; grid-template-columns: repeat(3, 1fr); gap: .45em; margin-top: .9em; }
+    .foto{ position: relative; aspect-ratio: 3 / 4; border-radius: .8em; overflow: hidden; background: #000; border: 1.5px solid rgba(157,255,220,.25); }
+    .foto img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+    .foto em{ position: absolute; left: .3em; right: .3em; bottom: .3em; padding: .15em .3em; border-radius: 999px; font-style: normal; font-size: .62em; font-weight: 900; text-align: center; background: rgba(0,0,0,.72); color: #fff; }
+    .foto.sube em{ color: var(--oro); } .foto.ok em{ color: var(--lima); } .foto.err em{ color: var(--mal); }
+    .foto.sube::after{ content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%); background-size: 250% 100%; animation: brillo 1.2s linear infinite; }
+    @keyframes brillo{ from{ background-position: 120% 0; } to{ background-position: -120% 0; } }
+    .estados{ display: flex; flex-wrap: wrap; justify-content: center; gap: .4em; margin-top: .7em; }
+
+    .promo{ text-align: center; }
+    .promo h2{ margin: 0; font-family: "Orbitron", sans-serif; font-size: 1em; color: var(--oro); text-transform: uppercase; letter-spacing: .5px; }
+    .promo p{ margin: .45em 0 0; color: var(--txt2); font-size: .88em; }
+    .promo .cod{ margin-top: .5em; font-family: "Orbitron", sans-serif; font-weight: 900; font-size: 1.7em; letter-spacing: .28em; color: var(--oro); text-shadow: 0 0 14px rgba(255,226,122,.7); }
+    .pie{ margin-top: 1.2em; text-align: center; font-size: .7em; color: var(--txt3); }
+    .cargando{ text-align: center; padding: 2.2em .5em; color: var(--txt2); }
+    .cargando i{ display: block; font-style: normal; font-size: 2.6em; animation: rebote 1s ease-in-out infinite; }
+    @keyframes rebote{ 50%{ transform: translateY(-8px); } }
+    [hidden]{ display: none !important; }
+    @media (prefers-reduced-motion: reduce){ *{ animation: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="estrellas" id="estrellas"></div>
+  <main>
+    <div class="cab">
+      <img src="https://i.imgur.com/MHb7x08.png" alt="Gif And Memory">
+      <div><b>ÁLBUM GIF</b><small>🎉 EVENTOS</small></div>
+    </div>
+    <div id="app"><div class="card cargando"><i>📸</i>Buscando tu evento…</div></div>
+    <div class="pie">Gif And Memory · Álbum GIF para eventos</div>
+  </main>
+
+<script>
+(function () {
+  "use strict";
+  /* ══ Servidor de Gif And Memory (la misma implementación /exec de la app) ══ */
+  var API  = "https://script.google.com/macros/s/AKfycbwoMVOMXOXfuzF66EhKNEAl-04jJY3AQf8X_E9g56LWjjP5aYyPcEs_gaU-TODgnhfSKw/exec";
+  var PLAY = "https://play.google.com/store/apps/details?id=com.giftandmemory.app";
+  var LADO_MAX = 1600;             // px del lado más largo de cada foto
+  var B64_MAX  = 3400000;          // la app acepta ~3 MB por foto
+
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function leer(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } }
+  function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function fechaTxt(f) { f = String(f || ""); return f.length === 8 ? f.slice(6, 8) + "/" + f.slice(4, 6) + "/" + f.slice(0, 4) : ""; }
+  function plural(n, s, p) { return n + " " + (n === 1 ? s : (p || s + "s")); }
+
+  // Cada teléfono tiene su propio número secreto (así cuenta sus fotos)
+  var TOK = leer("GMEV_TOKEN");
+  if (!/^[a-z0-9]{24}$/.test(TOK)) {
+    var abc = "abcdefghijklmnopqrstuvwxyz0123456789", t = "";
+    var rnd = (window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(24)) : null;
+    for (var i = 0; i < 24; i++) t += abc.charAt(rnd ? rnd[i] % abc.length : Math.floor(Math.random() * abc.length));
+    TOK = t; guardar("GMEV_TOKEN", TOK);
+  }
+
+  var qs = new URLSearchParams(location.search);
+  var CODIGO = String(qs.get("e") || qs.get("evento") || qs.get("codigo") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+  var EV = null, SUBIENDO = false, SESION = [];
+
+  function llamar(datos) {
+    // Texto simple (sin encabezados) → Google lo acepta desde cualquier página
+    return fetch(API, { method: "POST", body: JSON.stringify(datos), redirect: "follow" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+  }
+
+  /* ── Estrellas de fondo ── */
+  (function () {
+    var c = $("estrellas"), h = "";
+    for (var k = 0; k < 40; k++) h += '<i style="left:' + (Math.random() * 100) + "%;top:" + (Math.random() * 100) + "%;animation-delay:" + (Math.random() * 3) + 's"></i>';
+    c.innerHTML = h;
+  })();
+
+  /* ── Pantalla: escribir el código ── */
+  function pintarCodigo(error) {
+    $("app").innerHTML =
+      '<div class="card"><h1>📸 Sube tus fotos</h1>' +
+      '<div class="sub">Escribe el código del evento que te dio el anfitrión (está en la tarjeta o en el QR de las mesas).</div>' +
+      '<label class="lbl" for="inCod">Código del evento</label>' +
+      '<input class="in cod" id="inCod" maxlength="8" autocomplete="off" autocapitalize="characters" value="' + esc(CODIGO) + '" placeholder="ABC123">' +
+      '<button class="btn oro" type="button" id="btnCod">ENTRAR AL EVENTO</button>' +
+      '<div class="msg ' + (error ? "mal" : "") + '" id="msgCod">' + esc(error || "") + "</div></div>";
+    var ir = function () {
+      var c = $("inCod").value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+      if (c.length < 4) { $("msgCod").className = "msg mal"; $("msgCod").textContent = "Revisa el código: son 6 letras o números."; return; }
+      CODIGO = c;
+      try { history.replaceState(null, "", "?e=" + encodeURIComponent(c)); } catch (e) {}
+      cargar();
+    };
+    $("btnCod").onclick = ir;
+    $("inCod").onkeydown = function (e) { if (e.key === "Enter") ir(); };
+  }
+
+  /* ── Cargar el evento ── */
+  function cargar() {
+    if (!CODIGO) { pintarCodigo(""); return; }
+    $("app").innerHTML = '<div class="card cargando"><i>📸</i>Buscando tu evento…</div>';
+    llamar({ accion: "evInfo", codigo: CODIGO, token: TOK }).then(function (r) {
+      if (!r || !r.ok) { pintarCodigo((r && r.message) || "No encontramos ese evento."); return; }
+      EV = r; pintarEvento();
+    }).catch(function () {
+      $("app").innerHTML = '<div class="card"><div class="vacio">📶 No pudimos conectarnos.<br>Revisa tu internet e intenta de nuevo.</div>' +
+        '<button class="btn" type="button" id="btnReint">REINTENTAR</button></div>';
+      $("btnReint").onclick = cargar;
+    });
+  }
+
+  function quedan() { return EV ? Math.max(0, EV.max - EV.usadas) : 0; }
+
+  /* ── Pantalla del evento ── */
+  function pintarEvento() {
+    var r = EV, nom = leer("GMEV_NOMBRE");
+    document.title = "📸 " + r.nombre + " · Álbum GIF";
+    var h = '<div class="card">' +
+      '<div class="portada">' + (r.portada ? '<img src="' + r.portada + '" alt="">' : "🎉") + "</div>" +
+      "<h1>" + esc(r.nombre) + "</h1>" +
+      '<div class="sub">' + (r.anfitrion ? "Anfitrión: <b>" + esc(r.anfitrion) + "</b>" : "") + (r.fecha ? " · 📅 " + fechaTxt(r.fecha) : "") + "</div>" +
+      '<div class="chips"><span class="chip oro">📸 Hasta ' + plural(r.max, "foto") + "</span>" +
+        (r.cierre ? '<span class="chip">⏳ Hasta el ' + fechaTxt(r.cierre) + "</span>" : "") +
+        '<span class="chip rosa">' + (r.aprobAuto ? "✅ Entran directo al álbum" : "👀 El anfitrión las revisa") + "</span></div>";
+
+    if (!r.abiertas) {
+      h += '<div class="vacio">📪 Ya se cerró la subida de fotos de este evento.<br>¡Gracias por acompañar!</div>';
+    } else {
+      h += '<div class="pasos"><div class="paso"><i>✍️</i><b>1.</b> Tu nombre</div><div class="paso"><i>🖼️</i><b>2.</b> Elige tus fotos</div><div class="paso"><i>🎉</i><b>3.</b> ¡Listo! Van al álbum</div></div>' +
+        '<label class="lbl" for="inNom">Tu nombre</label>' +
+        '<input class="in" id="inNom" maxlength="40" autocomplete="name" placeholder="Ej: Camila Rojas" value="' + esc(nom) + '">' +
+        '<div class="cuenta" id="cuenta"></div>' +
+        '<div class="fila"><button class="btn oro" type="button" id="btnElegir">🖼️ ELEGIR FOTOS</button>' +
+        '<button class="btn sec" type="button" id="btnCamara">📷 TOMAR FOTO</button></div>' +
+        '<input type="file" id="inFotos" accept="image/*" multiple hidden>' +
+        '<input type="file" id="inCamara" accept="image/*" capture="environment" hidden>';
+    }
+    h += '<div class="msg" id="msg"></div><div class="fotos" id="fotos"></div><div class="estados" id="estados"></div></div>';
+
+    // Invitación a la app (para coleccionar las láminas)
+    h += '<div class="card promo"><h2>🎁 ¿Quieres las láminas?</h2>' +
+      "<p>Con la app <b>Gif And Memory</b> abres sobres, coleccionas las láminas de este evento y buscas la <b>Lámina Dorada</b> 🏆. Entra a <b>Álbum GIF → 🎉 Eventos</b> con este código:</p>" +
+      '<div class="cod">' + esc(r.codigo) + "</div>" +
+      '<a class="btn play" href="' + esc(r.play || PLAY) + '" target="_blank" rel="noopener">📲 DESCARGAR GIF AND MEMORY</a>' +
+      '<button class="btn sec" type="button" id="btnCopiar">📋 COPIAR CÓDIGO</button></div>';
+
+    $("app").innerHTML = h;
+    pintarCuenta(); pintarSesion(); pintarEstados();
+
+    if ($("btnElegir")) {
+      $("btnElegir").onclick = function () { if (listoNombre()) $("inFotos").click(); };
+      $("btnCamara").onclick = function () { if (listoNombre()) $("inCamara").click(); };
+      $("inFotos").onchange = function () { subir(this.files); this.value = ""; };
+      $("inCamara").onchange = function () { subir(this.files); this.value = ""; };
+      $("inNom").oninput = function () { guardar("GMEV_NOMBRE", this.value.trim()); };
+    }
+    $("btnCopiar").onclick = function () { copiar(r.codigo); };
+  }
+
+  function listoNombre() {
+    var n = $("inNom").value.replace(/\s+/g, " ").trim();
+    if (n.length < 2) { msg("✍️ Primero escribe tu nombre, así el anfitrión sabe quién subió la foto.", "mal"); $("inNom").focus(); return false; }
+    if (!quedan()) { msg("✅ Ya subiste todas tus fotos. ¡Gracias!", "bien"); return false; }
+    guardar("GMEV_NOMBRE", n);
+    return true;
+  }
+
+  function msg(t, tipo) { var m = $("msg"); if (!m) return; m.className = "msg" + (tipo ? " " + tipo : ""); m.textContent = t || ""; }
+  function pintarCuenta() {
+    var c = $("cuenta"); if (!c || !EV) return;
+    var q = quedan();
+    c.className = "cuenta" + (q ? "" : " no");
+    c.textContent = q ? "Te quedan " + q + " de " + plural(EV.max, "foto") : "✅ Ya subiste tus " + plural(EV.max, "foto") + ". ¡Gracias!";
+    if ($("btnElegir")) { $("btnElegir").disabled = !q || SUBIENDO; $("btnCamara").disabled = !q || SUBIENDO; }
+  }
+  function pintarSesion() {
+    var g = $("fotos"); if (!g) return;
+    g.innerHTML = SESION.map(function (f) {
+      var t = f.est === "sube" ? "⏳ Subiendo…" : (f.est === "ok" ? (f.aprob ? "✅ En el álbum" : "✅ Enviada") : (f.est === "err" ? "✕ No se subió" : "En espera"));
+      return '<div class="foto ' + f.est + '"><img src="' + f.mini + '" alt=""><em>' + t + "</em></div>";
+    }).join("");
+  }
+  function pintarEstados() {
+    var e = $("estados"); if (!e || !EV) return;
+    var p = 0, a = 0, x = 0;
+    (EV.misFotos || []).forEach(function (s) { if (s === "APROBADA") a++; else if (s === "RECHAZADA") x++; else p++; });
+    e.innerHTML = (a ? '<span class="chip">✅ ' + plural(a, "foto") + " en el álbum</span>" : "") +
+                  (p ? '<span class="chip oro">⏳ ' + plural(p, "foto") + " esperando al anfitrión</span>" : "") +
+                  (x ? '<span class="chip rosa">✕ ' + plural(x, "foto") + " no entr" + (x === 1 ? "ó" : "aron") + "</span>" : "");
+  }
+
+  /* ── Achicar la foto antes de enviarla (rápido y liviano) ── */
+  function preparar(file) {
+    return new Promise(function (ok, mal) {
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, LADO_MAX / Math.max(w, h));
+        w = Math.max(1, Math.round(w * k)); h = Math.max(1, Math.round(h * k));
+        var cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+        var x = cv.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, w, h); x.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        var q = 0.85, d = cv.toDataURL("image/jpeg", q);
+        while (d.length > B64_MAX && q > 0.4) { q -= 0.1; d = cv.toDataURL("image/jpeg", q); }
+        var m = document.createElement("canvas"), s = 240 / Math.max(w, h); m.width = Math.round(w * s); m.height = Math.round(h * s);
+        m.getContext("2d").drawImage(cv, 0, 0, m.width, m.height);
+        ok({ b64: d, mini: m.toDataURL("image/jpeg", 0.7) });
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); mal(new Error("Esta foto no se pudo abrir. Prueba con otra (JPG o PNG).")); };
+      img.src = url;
+    });
+  }
+
+  /* ── Subir una por una ── */
+  function subir(files) {
+    files = Array.prototype.slice.call(files || []).filter(function (f) { return /^image\//.test(f.type) || /\.(jpe?g|png|webp|heic|heif)$/i.test(f.name); });
+    if (!files.length || SUBIENDO) return;
+    var max = quedan();
+    if (files.length > max) msg("Solo puedes subir " + plural(max, "foto") + " más: subiremos las primeras.", "");
+    files = files.slice(0, max);
+    var nombre = leer("GMEV_NOMBRE");
+    var lote = files.map(function (f) { var o = { file: f, est: "espera", mini: "data:image/gif;base64,R0lGODlhAQABAAAAACw=" }; SESION.unshift(o); return o; });
+    SUBIENDO = true; pintarCuenta(); pintarSesion();
+    var bien = 0, total = lote.length;
+    (function sig(i) {
+      if (i >= lote.length) {
+        SUBIENDO = false; pintarCuenta();
+        if (bien) msg("🎉 " + plural(bien, "foto") + " enviada" + (bien === 1 ? "" : "s") + (EV.aprobAuto ? " al álbum." : ". El anfitrión las revisa y entran al álbum.") + " ¡Gracias!", "bien");
+        refrescar();
+        return;
+      }
+      var o = lote[i];
+      msg("⏳ Subiendo foto " + (i + 1) + " de " + total + "…");
+      preparar(o.file).then(function (p) {
+        o.mini = p.mini; o.est = "sube"; pintarSesion();
+        return llamar({ accion: "evSubir", codigo: CODIGO, token: TOK, nombre: nombre, b64: p.b64, mime: "image/jpeg" });
+      }).then(function (r) {
+        if (r && r.ok) {
+          o.est = "ok"; o.aprob = r.estado === "APROBADA"; bien++;
+          EV.usadas = r.usadas; EV.max = r.max; pintarCuenta(); pintarSesion();
+          sig(i + 1);
+        } else {
+          o.est = "err"; pintarSesion();
+          if (r && (r.sinCupo || r.cerrado || r.noExiste)) {
+            if (r.sinCupo) { EV.usadas = r.usadas || EV.max; }
+            lote.slice(i + 1).forEach(function (z) { z.est = "err"; });
+            SUBIENDO = false; pintarCuenta(); pintarSesion(); msg((r && r.message) || "No se pudo subir.", "mal"); return;
+          }
+          msg((r && r.message) || "No se pudo subir esta foto.", "mal");
+          sig(i + 1);
+        }
+      }).catch(function (err) {
+        o.est = "err"; pintarSesion();
+        msg((err && /abrir/.test(err.message)) ? err.message : "📶 Se cortó la conexión con esta foto. Vuelve a elegirla.", "mal");
+        sig(i + 1);
+      });
+    })(0);
+  }
+
+  function refrescar() {
+    llamar({ accion: "evInfo", codigo: CODIGO, token: TOK }).then(function (r) {
+      if (r && r.ok) { EV = r; pintarCuenta(); pintarEstados(); }
+    }).catch(function () {});
+  }
+
+  function copiar(t) {
+    var listo = function () { var b = $("btnCopiar"); if (b) { b.textContent = "✅ CÓDIGO COPIADO"; setTimeout(function () { b.textContent = "📋 COPIAR CÓDIGO"; }, 2000); } };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(listo, viejo); return; } } catch (e) {}
+    viejo();
+    function viejo() { try { var ta = document.createElement("textarea"); ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); listo(); } catch (e2) {} }
+  }
+
+  // Si vuelve a la página después de un rato, se actualiza el estado de sus fotos
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && EV && !SUBIENDO) refrescar(); });
+
+  cargar();
+})();
+</script>
+</body>
+</html>
